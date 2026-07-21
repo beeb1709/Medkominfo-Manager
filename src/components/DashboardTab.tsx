@@ -42,13 +42,13 @@ export default function DashboardTab({
 }: DashboardTabProps) {
 
     const getLogStatusClass = (status: string) => {
-    switch(status.toLowerCase()) {
-      case 'completed': return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400';
-      case 'in_progress': return 'bg-blue-100 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400';
-      case 'failed': return 'bg-rose-100 text-rose-600 dark:bg-rose-400/10 dark:text-rose-400';
-      case 'scheduled': return 'bg-amber-100 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400';
-      default: return 'bg-slate-100 text-slate-600 dark:bg-slate-400/10 dark:text-slate-400';
-    }
+    const s = status.toLowerCase().replace(/[\s_-]+/g, '');
+    if (s === 'completed' || s === 'done') return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400';
+    if (s === 'inprogress') return 'bg-blue-100 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400';
+    if (s === 'failed' || s === 'cancelled') return 'bg-rose-100 text-rose-600 dark:bg-rose-400/10 dark:text-rose-400';
+    if (s === 'scheduled') return 'bg-amber-100 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400';
+    if (s === 'pending') return 'bg-slate-100 text-slate-500 dark:bg-slate-400/10 dark:text-slate-400';
+    return 'bg-slate-100 text-slate-600 dark:bg-slate-400/10 dark:text-slate-400';
   };
 
   const handleLogClick = (log: OperationalLog) => {

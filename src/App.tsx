@@ -688,6 +688,10 @@ export default function App() {
                   };
                   saveState('medkom_archives_db_v5', [newArchive, ...archives], setArchives);
                 }
+                // Bersihkan log entry yang terkait agar tidak muncul lagi di dashboard
+                const cleanedLogs = logs.filter(l => l.entityId !== id);
+                saveState('medkom_logs_db_v5', cleanedLogs, setLogs);
+
                 const filtered = tasks.filter(t => t.id !== id);
                 saveState('medkom_tasks_db_v5', filtered, setTasks);
               }}
@@ -763,6 +767,10 @@ export default function App() {
                   };
                   saveState('medkom_archives_db_v5', [newArchive, ...archives], setArchives);
                 }
+                // Bersihkan log entry yang terkait
+                const cleanedLogs = logs.filter(l => l.entityId !== id);
+                saveState('medkom_logs_db_v5', cleanedLogs, setLogs);
+
                 const filtered = videos.filter(v => v.id !== id);
                 saveState('medkom_videos_db_v5', filtered, setVideos);
               }}
@@ -838,6 +846,10 @@ export default function App() {
                   };
                   saveState('medkom_archives_db_v5', [newArchive, ...archives], setArchives);
                 }
+                // Bersihkan log entry yang terkait
+                const cleanedLogs = logs.filter(l => l.entityId !== id);
+                saveState('medkom_logs_db_v5', cleanedLogs, setLogs);
+
                 const filtered = publications.filter(p => p.id !== id);
                 saveState('medkom_publications_db_v5', filtered, setPublications);
               }}
