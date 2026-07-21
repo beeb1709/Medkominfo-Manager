@@ -11,7 +11,8 @@ import {
   User,
   Tag,
   Check,
-  Trash2, FileText, Camera, Image as ImageIcon, Ban, Paperclip, UserSquare2, PenLine
+  Trash2, FileText, Camera, Image as ImageIcon, Ban, Paperclip, UserSquare2, PenLine,
+  ArrowUpDown
 } from 'lucide-react';
 import { TaskItem, Resident } from '../types';
 import { checkPermission } from '../utils';
@@ -402,6 +403,7 @@ export default function DesignTab({
 }: DesignTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [sortDesc, setSortDesc] = useState(true); // true = terbaru di atas
   const [newForm, setNewForm] = useState({
     title: '',
     category: 'Design',
@@ -454,7 +456,8 @@ export default function DesignTab({
   const hasAccess = checkPermission(currentUser?.jabatan, 'Design');
 
   const getFilteredTasks = (colId: TaskItem['status']) => {
-    return tasks.filter(t => t.status === colId && t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filtered = tasks.filter(t => t.status === colId && t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    return sortDesc ? [...filtered].reverse() : filtered;
   };
 
   return (
@@ -478,6 +481,15 @@ export default function DesignTab({
               className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:border-blue-500"
             />
           </div>
+
+          <button
+            onClick={() => setSortDesc(p => !p)}
+            title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all"
+          >
+            <ArrowUpDown className="w-3.5 h-3.5" />
+            {sortDesc ? 'Terbaru' : 'Terlama'}
+          </button>
 
           {currentUser?.jabatan !== 'Pengawas' && (
             <button 

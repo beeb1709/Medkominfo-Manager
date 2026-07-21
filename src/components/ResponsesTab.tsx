@@ -13,7 +13,8 @@ import {
   Zap,
   Check,
   Trash2,
-  X
+  X,
+  ArrowUpDown
 } from 'lucide-react';
 import { Submission } from '../types';
 
@@ -37,6 +38,7 @@ export default function ResponsesTab({
   const [deptFilter, setDeptFilter] = useState('All');
   const [urgencyFilter, setUrgencyFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [sortDesc, setSortDesc] = useState(true);
 
   // Integration Sheets state
   const [spreadsheetId, setSpreadsheetId] = useState(localStorage.getItem('medkom_spreadsheet_id') || '');
@@ -112,19 +114,22 @@ export default function ResponsesTab({
   };
 
   // Filter logic
-  const filteredSubmissions = submissions.filter(sub => {
-    const matchesSearch = 
-      sub.sender.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.programKerja.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.jenisPengajuan.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.id.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesDept = deptFilter === 'All' || sub.department === deptFilter;
-    const matchesUrgency = urgencyFilter === 'All' || sub.urgency === urgencyFilter;
-    const matchesStatus = statusFilter === 'All' || sub.status === statusFilter;
+  const filteredSubmissions = (() => {
+    const f = submissions.filter(sub => {
+      const matchesSearch = 
+        sub.sender.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.programKerja.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.jenisPengajuan.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.id.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesDept = deptFilter === 'All' || sub.department === deptFilter;
+      const matchesUrgency = urgencyFilter === 'All' || sub.urgency === urgencyFilter;
+      const matchesStatus = statusFilter === 'All' || sub.status === statusFilter;
 
-    return matchesSearch && matchesDept && matchesUrgency && matchesStatus;
-  });
+      return matchesSearch && matchesDept && matchesUrgency && matchesStatus;
+    });
+    return sortDesc ? [...f].reverse() : f;
+  })();
 
   const getUrgencyBadge = (urgency: 'Low' | 'Medium' | 'High') => {
     switch (urgency) {
@@ -173,6 +178,13 @@ export default function ResponsesTab({
           >
             <Download className="w-4 h-4 text-slate-500" />
             Export
+          <button
+            onClick={() => setSortDesc(p => !p)}
+            title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+            className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold transition-all text-slate-700 dark:text-slate-300 shadow-sm"
+          >
+            <ArrowUpDown className="w-4 h-4 text-slate-500" />
+            {sortDesc ? 'Terbaru' : 'Terlama'}
           </button>
           
           <button 

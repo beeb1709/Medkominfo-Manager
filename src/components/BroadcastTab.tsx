@@ -8,7 +8,8 @@ import {
   Copy,
   Save,
   CheckCircle,
-  FileText
+  FileText,
+  ArrowUpDown
 } from 'lucide-react';
 import { BroadcastCampaign } from '../types';
 import { checkPermission } from '../utils';
@@ -32,8 +33,11 @@ export default function BroadcastTab({
 }: BroadcastTabProps) {
   const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
   const [editMessage, setEditMessage] = useState<string>('');
+  const [sortDesc, setSortDesc] = useState(true);
   
   const hasAccess = checkPermission(currentUser?.jabatan, 'Broadcast');
+
+  const sortedCampaigns = sortDesc ? [...campaigns].reverse() : campaigns;
 
   const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
 
@@ -93,17 +97,25 @@ export default function BroadcastTab({
         {/* Left Side - Campaigns Log */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-200px)] min-h-[500px]">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 flex justify-between items-center">
               <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Campaigns Log</h4>
+              <button
+                onClick={() => setSortDesc(p => !p)}
+                title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+                className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all"
+              >
+                <ArrowUpDown className="w-3 h-3" />
+                {sortDesc ? 'Terbaru' : 'Terlama'}
+              </button>
             </div>
             <div className="divide-y divide-slate-100 overflow-y-auto flex-1">
-              {campaigns.length === 0 ? (
+              {sortedCampaigns.length === 0 ? (
                 <div className="p-8 text-center text-slate-600 dark:text-slate-400">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-xs font-bold">No campaigns found.</p>
                 </div>
               ) : (
-                campaigns.map((camp) => (
+                sortedCampaigns.map((camp) => (
                   <div 
                     key={camp.id} 
                     onClick={() => handleSelectCampaign(camp)}

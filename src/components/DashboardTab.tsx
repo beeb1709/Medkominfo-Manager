@@ -11,7 +11,8 @@ import {
   Server, 
   CheckCircle2, 
   Play,
-  ArrowRight
+  ArrowRight,
+  ArrowUpDown
 } from 'lucide-react';
 import { OperationalLog, TaskItem, VideoProject, BroadcastCampaign, MouAgreement, PublicationItem, ArchiveItem } from '../types';
 
@@ -40,6 +41,7 @@ export default function DashboardTab({
   onNavigateToTab, 
   onOpenNewProject 
 }: DashboardTabProps) {
+    const [sortDesc, setSortDesc] = React.useState(true);
 
     const getLogStatusClass = (status: string) => {
     const s = status.toLowerCase().replace(/[\s_-]+/g, '');
@@ -254,6 +256,14 @@ export default function DashboardTab({
             >
               View All Logs
             </button>
+            <button
+              onClick={() => setSortDesc(p => !p)}
+              title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+              className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all ml-2"
+            >
+              <ArrowUpDown className="w-3 h-3" />
+              {sortDesc ? 'Terbaru' : 'Terlama'}
+            </button>
           </div>
 
           <div className="overflow-x-auto">
@@ -268,7 +278,7 @@ export default function DashboardTab({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {logs.map((log) => (
+                {(sortDesc ? [...logs].reverse() : logs).map((log) => (
                   <tr 
                     key={log.id} 
                     onClick={() => handleLogClick(log)}

@@ -8,7 +8,8 @@ import {
   Trash2, 
   MessageSquare, 
   Mail,
-  UserCheck
+  UserCheck,
+  ArrowUpDown
 } from 'lucide-react';
 import { Resident } from '../types';
 
@@ -30,6 +31,7 @@ export default function ResidentsTab({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDivision, setSelectedDivision] = useState('All');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [sortDesc, setSortDesc] = useState(true);
 
   // New Resident State
   const [newRes, setNewRes] = useState({
@@ -91,15 +93,18 @@ export default function ResidentsTab({
   };
 
   // Filter logic
-  const filtered = residents.filter(res => {
-    const matchesSearch = 
-      res.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      res.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      res.id.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesDiv = selectedDivision === 'All' || res.division === selectedDivision;
-    return matchesSearch && matchesDiv;
-  });
+  const filtered = (() => {
+    const f = residents.filter(res => {
+      const matchesSearch = 
+        res.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        res.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        res.id.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesDiv = selectedDivision === 'All' || res.division === selectedDivision;
+      return matchesSearch && matchesDiv;
+    });
+    return sortDesc ? [...f].reverse() : f;
+  })();
 
   return (
     <div className="space-y-6">
@@ -112,6 +117,15 @@ export default function ResidentsTab({
         </div>
 
         <div className="flex gap-2">
+          <button
+            onClick={() => setSortDesc(p => !p)}
+            title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all"
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            {sortDesc ? 'Terbaru' : 'Terlama'}
+          </button>
+          
           <button 
             onClick={() => setIsAddOpen(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10 transition-all"

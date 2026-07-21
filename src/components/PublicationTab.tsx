@@ -7,8 +7,8 @@ import {
   Send, 
   Trash2, FileText, Camera, Image as ImageIcon, Ban, Paperclip, UserSquare2, PenLine, 
   Check, 
-  Sparkles,
-  Search
+  Search,
+  ArrowUpDown
 } from 'lucide-react';
 import { PublicationItem } from '../types';
 import { checkPermission } from '../utils';
@@ -251,6 +251,7 @@ export default function PublicationTab({
   const [isAddOpen, setIsAddOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedPub, setSelectedPub] = React.useState<any>(null);
+  const [sortDesc, setSortDesc] = React.useState(true);
 
   const [newTitle, setNewTitle] = React.useState('');
   const [newPlatform, setNewPlatform] = React.useState('Instagram');
@@ -261,7 +262,10 @@ export default function PublicationTab({
 
   const hasAccess = checkPermission(currentUser?.jabatan, 'Content Publication');
 
-  const filteredPubs = publications.filter((p: any) => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredPubs = (() => {
+    const f = publications.filter((p: any) => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    return sortDesc ? [...f].reverse() : f;
+  })();
 
   const handleCreatePublication = (e: any) => {
     e.preventDefault();
@@ -299,20 +303,31 @@ export default function PublicationTab({
           <Search className="w-4 h-4 text-slate-600 dark:text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search publication..."
+            placeholder="Search content drafts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:border-blue-300 transition-colors"
+            className="w-full pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:border-blue-500 bg-slate-50 dark:bg-slate-950/50"
           />
         </div>
-        {currentUser?.jabatan !== 'Pengawas' && (
-        <button
-          onClick={() => setIsAddOpen(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" /> Add Publication
-        </button>
-        )}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setSortDesc(p => !p)}
+            title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all"
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            {sortDesc ? 'Terbaru' : 'Terlama'}
+          </button>
+
+          {currentUser?.jabatan !== 'Pengawas' && (
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" /> Add Publication
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">

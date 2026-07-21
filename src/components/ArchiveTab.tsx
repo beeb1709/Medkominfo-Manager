@@ -5,7 +5,8 @@ import {
   CheckCircle2,
   Trash2,
   ArchiveRestore,
-  ArchiveX
+  ArchiveX,
+  ArrowUpDown
 } from 'lucide-react';
 import { ArchiveItem } from '../types';
 
@@ -26,8 +27,12 @@ export default function ArchiveTab({
 }: ArchiveTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [itemToDelete, setItemToDelete] = useState<ArchiveItem | null>(null);
+  const [sortDesc, setSortDesc] = useState(true);
 
-  const filtered = archives.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filtered = (() => {
+    const f = archives.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return sortDesc ? [...f].reverse() : f;
+  })();
   const isAdmin = currentUser?.jabatan !== 'Pengawas';
 
   const categoryColor: Record<string, string> = {
@@ -47,15 +52,25 @@ export default function ArchiveTab({
           <h2 className="text-3xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-blue-100 dark:to-slate-300 tracking-tight">Project Archive</h2>
           <p className="text-sm text-slate-500 mt-1">Historic repository of published content, finished designs, and expired media MoUs.</p>
         </div>
-        <div className="relative w-64">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search archived items..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative w-64">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search archived items..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            />
+          </div>
+          <button
+            onClick={() => setSortDesc(p => !p)}
+            title={sortDesc ? 'Tampilkan terlama dahulu' : 'Tampilkan terbaru dahulu'}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all"
+          >
+            <ArrowUpDown className="w-3.5 h-3.5" />
+            {sortDesc ? 'Terbaru' : 'Terlama'}
+          </button>
         </div>
       </div>
 
