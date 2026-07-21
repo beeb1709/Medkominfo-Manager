@@ -483,6 +483,29 @@ export default function App() {
                 }
               }}
               onDeleteSubmission={(id) => {
+                const subToArchive = submissions.find(s => s.id === id);
+                if (subToArchive) {
+                  const newArchive: ArchiveItem = {
+                    id: subToArchive.id,
+                    name: `Request: ${subToArchive.jenisPengajuan} from ${subToArchive.sender}`,
+                    category: 'Submission',
+                    dateCompleted: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                    pic: subToArchive.picHumas || 'Unassigned',
+                    originalData: subToArchive
+                  };
+                  saveState('medkom_archives_db_v5', [newArchive, ...archives], setArchives);
+                  
+                  const newLog: OperationalLog = {
+                    id: `LOG-0${logs.length + 1}`,
+                    task: `Archived Request: ${subToArchive.jenisPengajuan}`,
+                    department: subToArchive.department || '-',
+                    jenisPengajuan: 'Submission',
+                    status: 'Cancelled',
+                    time: 'Just Now',
+                    entityId: subToArchive.id
+                  };
+                  saveState('medkom_logs_db_v5', [newLog, ...logs], setLogs);
+                }
                 const filtered = submissions.filter(s => s.id !== id);
                 saveState('medkom_submissions_db', filtered, setSubmissions);
               }}
@@ -984,6 +1007,31 @@ export default function App() {
                     pic: item.pic || 'Unassigned'
                   };
                   saveState('medkom_tasks_db_v5', [...tasks, restoredTask], setTasks);
+                } else if (cat === 'mou') {
+                  const restoredMou: MouAgreement = item.originalData ? { ...item.originalData } : {
+                    id: `MOU-${Date.now()}`,
+                    institution: item.name.replace('MoU: ', ''),
+                    mouType: 'MoU Satu Periode',
+                    validity: `${now} - ${now}`,
+                    pic: item.pic || 'Unassigned',
+                    status: 'Active'
+                  };
+                  saveState('medkom_mous_db_v5', [...mous, restoredMou], setMous);
+                } else if (cat === 'submission') {
+                  const restoredSub: Submission = item.originalData ? { ...item.originalData } : {
+                    id: `MDK-${Date.now()}`,
+                    timestamp: now,
+                    sender: 'Restored User',
+                    department: 'Departemen Media Komunikasi dan Informasi',
+                    picHumas: item.pic || 'Unassigned',
+                    programKerja: item.name,
+                    jenisPengajuan: 'Lainnya',
+                    urgency: 'Medium',
+                    deadline: now,
+                    status: 'Queue',
+                    details: 'Restored from archive'
+                  };
+                  saveState('medkom_submissions_db', [...submissions, restoredSub], setSubmissions);
                 }
               }}
             />
