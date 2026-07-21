@@ -204,7 +204,47 @@ export default function App() {
 
   // Synchronized Calendar Events with latest PICs from tasks/videos/publications/campaigns/submissions
   const mappedEvents = useMemo(() => {
-    return events.map((e) => {
+    return events
+      .filter((e) => {
+        // Hapus event jika entitas aslinya sudah selesai atau tidak ada (di-archive/delete)
+        if (e.entityId) {
+          if (e.type === 'design') {
+            const t = tasks.find(x => x.id === e.entityId);
+            if (!t || t.status === 'Done') return false;
+          }
+          if (e.type === 'video') {
+            const v = videos.find(x => x.id === e.entityId);
+            if (!v || v.status === 'Done') return false;
+          }
+          if (e.type === 'publication') {
+            const p = publications.find(x => x.id === e.entityId);
+            if (!p || p.status === 'Done') return false;
+          }
+          if (e.type === 'broadcast') {
+            const c = campaigns.find(x => x.id === e.entityId);
+            if (!c || c.status === 'Sent' || c.status === 'Cancelled') return false;
+          }
+          if (e.type === 'mou') {
+            const m = mous.find(x => x.id === e.entityId);
+            if (!m || m.status === 'Expired' || m.status === 'Active') return false;
+          }
+        } else {
+          // Fallback legacy filter (substring match)
+          const cleanTitle = e.title.replace(/^(Design|Desain|Video|Publikasi|Broadcast|Campaign):\s*/i, '').trim().toLowerCase();
+          if (cleanTitle) {
+            if (e.type === 'design') {
+              const t = tasks.find(x => x.title.toLowerCase().includes(cleanTitle) || cleanTitle.includes(x.title.toLowerCase()));
+              if (!t || t.status === 'Done') return false;
+            }
+            if (e.type === 'video') {
+              const v = videos.find(x => x.title.toLowerCase().includes(cleanTitle) || cleanTitle.includes(x.title.toLowerCase()));
+              if (!v || v.status === 'Done') return false;
+            }
+          }
+        }
+        return true;
+      })
+      .map((e) => {
       // 1. Try matching by entityId
       if (e.entityId) {
         if (e.type === 'design') {
