@@ -218,15 +218,11 @@ export default function App() {
           }
           if (e.type === 'publication') {
             const p = publications.find(x => x.id === e.entityId);
-            if (!p || p.status === 'Done') return false;
+            if (!p || p.status === 'Published') return false;
           }
           if (e.type === 'broadcast') {
             const c = campaigns.find(x => x.id === e.entityId);
             if (!c || c.status === 'Sent' || c.status === 'Cancelled') return false;
-          }
-          if (e.type === 'mou') {
-            const m = mous.find(x => x.id === e.entityId);
-            if (!m || m.status === 'Expired' || m.status === 'Active') return false;
           }
         } else {
           // Fallback legacy filter (substring match)
@@ -971,6 +967,10 @@ export default function App() {
                   }
                 }
               }}
+              onDeleteMou={(mouId) => {
+                const updated = mous.filter(m => m.id !== mouId);
+                saveState('medkom_mous_db_v5', updated, setMous);
+              }}
               onTriggerNotification={triggerNotification}
             />
           )}
@@ -980,6 +980,10 @@ export default function App() {
               events={mappedEvents}
               onAddEvent={(e) => {
                 const updated = [...events, e];
+                saveState('medkom_calendar_db_v5', updated, setEvents);
+              }}
+              onDeleteEvent={(eventId) => {
+                const updated = events.filter(e => e.id !== eventId);
                 saveState('medkom_calendar_db_v5', updated, setEvents);
               }}
               onTriggerNotification={triggerNotification} 

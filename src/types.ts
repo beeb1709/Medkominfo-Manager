@@ -140,6 +140,7 @@ export interface CalendarEvent {
   time?: string;
   pic?: string;
   entityId?: string;
+  isManual?: boolean;
 }
 
 export interface AppSettings {

@@ -6,7 +6,8 @@ import {
   Plus, 
   Sparkles, 
   Clock, 
-  HelpCircle 
+  HelpCircle,
+  Trash2
 } from 'lucide-react';
 
 import { CalendarEvent } from '../types';
@@ -14,6 +15,7 @@ import { CalendarEvent } from '../types';
 interface CalendarTabProps {
   events: CalendarEvent[];
   onAddEvent: (event: CalendarEvent) => void;
+  onDeleteEvent: (eventId: string) => void;
   onTriggerNotification: (msg: string) => void;
 }
 
@@ -24,7 +26,7 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-export default function CalendarTab({ events, onAddEvent, onTriggerNotification }: CalendarTabProps) {
+export default function CalendarTab({ events, onAddEvent, onDeleteEvent, onTriggerNotification }: CalendarTabProps) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   
   // Real-time date control state
@@ -94,7 +96,8 @@ export default function CalendarTab({ events, onAddEvent, onTriggerNotification 
       type: newEventType as any,
       color: newEventColor || 'bg-slate-800 text-slate-300 border-slate-800',
       time: newEventTime,
-      pic: newEventPic
+      pic: newEventPic,
+      isManual: true,
     };
 
     onAddEvent(created);
@@ -300,18 +303,31 @@ export default function CalendarTab({ events, onAddEvent, onTriggerNotification 
                 const dayEvents = dayToView ? events.filter(e => e.year === currentYear && e.month === currentMonth && e.day === dayToView) : [];
                 return (
                   <>
-                    {dayEvents.length > 0 ? dayEvents.map((e, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5">
-                        <span className={`w-1.5 h-1.5 rounded-full mt-1.5 ${
+                      {dayEvents.length > 0 ? dayEvents.map((e, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 group/item">
+                        <span className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
                           e.type === 'meeting' ? 'bg-rose-500' :
                           e.type === 'video' ? 'bg-emerald-500' :
                           e.type === 'design' ? 'bg-blue-500' :
                           e.type === 'publication' ? 'bg-purple-500' : 'bg-amber-500'
                         }`}></span>
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <div className="font-bold text-slate-800 dark:text-slate-200 text-xs">{e.title}</div>
                           <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">{e.time || 'Waktu tidak ditentukan'} • PIC: {e.pic || 'Tidak ada'}</p>
                         </div>
+                        {e.isManual && (
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Apakah Anda yakin ingin menghapus kegiatan manual ini?')) {
+                                onDeleteEvent(e.id!);
+                              }
+                            }}
+                            className="flex-shrink-0 opacity-0 group-hover/item:opacity-100 p-1 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                            title="Hapus event manual ini"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
                       </div>
                     )) : (
                       <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">No milestones scheduled for this date.</p>
