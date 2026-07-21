@@ -1,0 +1,13 @@
+{
+  "id": "TEST-001",
+  "timestamp": "2026-07-21T12:40:00Z",
+  "sender": "Test User",
+  "department": "Medkom",
+  "picHumas": "Humas",
+  "programKerja": "Test Program",
+  "jenisPengajuan": "Desain",
+  "urgency": "Low",
+  "deadline": "2026-07-30",
+  "status": "Queue",
+  "details": "Test submission untuk cek koneksi Firestore dan Google Sheets"
+}

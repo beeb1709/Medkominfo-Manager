@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medkominfo Submission Manager</title>
+    <script>
+      (function() {
+        try {
+          var originalFetch = window.fetch || globalThis.fetch;
+          if (originalFetch) {
+            var currentVal = originalFetch;
+            var patch = {
+              configurable: true,
+              enumerable: true,
+              get: function() { return currentVal; },
+              set: function(val) { currentVal = val; }
+            };
+            try {
+              Object.defineProperty(window, 'fetch', patch);
+            } catch (e) {
+              console.warn('Could not define fetch on window:', e);
+            }
+            try {
+              Object.defineProperty(globalThis, 'fetch', patch);
+            } catch (e) {
+              console.warn('Could not define fetch on globalThis:', e);
+            }
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              try {
+                Object.defineProperty(Window.prototype, 'fetch', patch);
+              } catch (e) {}
+            }
+          }
+        } catch (err) {
+          console.error('Fetch patch error:', err);
+        }
+      })();
+    </script>
+    
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

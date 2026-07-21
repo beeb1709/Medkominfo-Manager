@@ -1,0 +1,6 @@
+{
+  "name": "Medkom Submission Manager",
+  "description": "A comprehensive management dashboard for Medkom department submissions integrated directly with Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,5 @@
+
+> react-example@0.0.0 lint
+> tsc --noEmit
+
+src/components/PublicPortalTab.tsx(1861,23): error TS2657: JSX expressions must have one parent element.
