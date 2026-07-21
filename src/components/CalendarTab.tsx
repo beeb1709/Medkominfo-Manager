@@ -304,7 +304,7 @@ export default function CalendarTab({ events, onAddEvent, onDeleteEvent, onTrigg
                 return (
                   <>
                       {dayEvents.length > 0 ? dayEvents.map((e, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 group/item">
+                      <div key={idx} className="flex items-start gap-2.5">
                         <span className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
                           e.type === 'meeting' ? 'bg-rose-500' :
                           e.type === 'video' ? 'bg-emerald-500' :
@@ -322,7 +322,7 @@ export default function CalendarTab({ events, onAddEvent, onDeleteEvent, onTrigg
                                 onDeleteEvent(e.id!);
                               }
                             }}
-                            className="flex-shrink-0 opacity-0 group-hover/item:opacity-100 p-1 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                            className="flex-shrink-0 opacity-30 hover:opacity-100 p-1 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                             title="Hapus event manual ini"
                           >
                             <Trash2 className="w-3 h-3" />

@@ -968,6 +968,18 @@ export default function App() {
                 }
               }}
               onDeleteMou={(mouId) => {
+                const mouToArchive = mous.find(m => m.id === mouId);
+                if (mouToArchive) {
+                  const newArchive = {
+                    id: `ARC-${Date.now()}`,
+                    name: `MoU: ${mouToArchive.institution}`,
+                    category: 'MoU',
+                    dateCompleted: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                    pic: mouToArchive.pic || 'Unassigned',
+                    originalData: mouToArchive
+                  };
+                  saveState('medkom_archives_db_v5', [newArchive, ...archives], setArchives);
+                }
                 const updated = mous.filter(m => m.id !== mouId);
                 saveState('medkom_mous_db_v5', updated, setMous);
               }}
