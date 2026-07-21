@@ -73,24 +73,30 @@ export default function ArchiveTab({
             {filtered.map((item) => (
               <tr key={item.id} className="hover:bg-slate-950/50 transition-colors">
                 <td className="py-4 px-5 font-mono text-slate-600 dark:text-slate-400">{item.id}</td>
-                <td className="py-4 px-5 font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  {item.name}
+                <td className="py-4 px-5 font-bold text-slate-800 dark:text-slate-200">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    {item.name}
+                  </div>
                 </td>
                 <td className="py-4 px-5">
                   <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase">
                     {item.category}
                   </span>
                 </td>
-                <td className="py-4 px-5 font-medium text-slate-500 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
-                  {item.dateCompleted}
+                <td className="py-4 px-5 font-medium text-slate-500">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
+                    {item.dateCompleted}
+                  </div>
                 </td>
-                <td className="py-4 px-5 font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                  <span className="w-5 h-5 bg-blue-50 text-blue-700 text-[9px] font-extrabold rounded-full flex items-center justify-center border border-blue-100">
-                    {item.pic[0]}
-                  </span>
-                  {item.pic}
+                <td className="py-4 px-5 font-semibold text-slate-600 dark:text-slate-400">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <span className="w-5 h-5 bg-blue-50 text-blue-700 text-[9px] font-extrabold rounded-full flex items-center justify-center border border-blue-100 shrink-0">
+                      {item.pic[0]}
+                    </span>
+                    {item.pic}
+                  </div>
                 </td>
                 {currentUser?.jabatan !== 'Pengawas' && (
                   <td className="py-4 px-5 text-center">
